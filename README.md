@@ -1,6 +1,6 @@
 # SmartRead
 
-Final project for 2016-2017 Advanced JS course at.
+Final project for 2016-2017 Advanced JS course at FMI.
 
 ## Description
 
