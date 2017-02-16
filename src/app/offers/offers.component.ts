@@ -11,6 +11,9 @@ export class OffersComponent {
     books: any
     bookstoreName: string;
     showPrice = true;
+    showRating = true;
+    addToList = true;
+    rate = true;
     
     constructor(private actionsService: ActionsService){
         Util.toggleNavbarButtonActive('nav-offers');

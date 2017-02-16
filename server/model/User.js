@@ -27,7 +27,7 @@ userSchema.query.byUsernamePassword = function(name, password) {
 };
 
 userSchema.query.byUsername = function(username) {
-  return this.find({ username: username });
+  return this.findOne({ username: username });
 };
 // the schema is useless so far
 // we need to create a model using it

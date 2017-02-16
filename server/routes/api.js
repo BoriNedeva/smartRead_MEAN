@@ -101,74 +101,95 @@ router.post('/searchBooks', (req, res) => {
   });
 });
 
-  router.post('/getLists', (req, res) => {
-    User.findOne({ username: req.body.name }, 'read toRead rated',
-      function (err, result) {
-        if (err) {
-          res.status(constants.INTERNAL_SERVER_ERR);
-        }
-        if (result) {
-          res.status(constants.OK).json(result);
-        }
-      });
-    // User
-    //   .findOne({ username: req.body.name }, 'read toRead rated')
-    //   .populate('read', 'toRead')
-    //   .exec(function (err, result) {
-    //   });
-  });
-
-  router.post('/addToList', (req, res) => {
-    let book;
-    //adding book to database or update prices
-    Book.findOne().byIsbn(rec.body.book.isbn).exec(function (err, result) {
+router.post('/getLists', (req, res) => {
+  User.findOne({ username: req.body.name }, 'read toRead rated',
+    function (err, result) {
+      if (err) {
+        res.status(constants.INTERNAL_SERVER_ERR);
+      }
       if (result) {
-        book = result;
-        if (rec.body.bookstore) {
-          let last_seen_item_index = result.last_seen.findIndex(item => item.bookstore === rec.body.bookstore);
-          if (last_seen_item_index !== -1) {
-            if (result.last_seen[last_seen_item_index].price !== rec.body.price) {
-              result.last_seen[last_seen_item_index].price = rec.body.price;
-              result.save(function (err) {
-                if (!err) { console.log('Success!'); }
-              });
-            }
-          } else {
-            result.last_seen.push({ bookstore: rec.body.bookstore, price: rec.body.price });
+        res.status(constants.OK).json(result);
+      }
+    });
+  // User
+  //   .findOne({ username: req.body.name }, 'read toRead rated')
+  //   .populate('read', 'toRead')
+  //   .exec(function (err, result) {
+  //   });
+});
+
+router.post('/addToList', (req, res) => {
+  let book;
+  //adding book to database or update prices
+  Book.findOne().byIsbn(req.body.book.isbn).exec(function (err, result) {
+    if (result) {
+      book = result;
+      if (req.body.bookstore) {
+        let last_seen_item_index = result.last_seen.findIndex(item => item.bookstore === req.body.bookstore);
+        if (last_seen_item_index !== -1) {
+          if (result.last_seen[last_seen_item_index].price !== req.body.book.price) {
+            result.last_seen[last_seen_item_index].price = req.body.book.price;
             result.save(function (err) {
               if (!err) { console.log('Success!'); }
             });
           }
+        } else {
+          result.last_seen.push({ bookstore: req.body.bookstore, price: req.body.book.price });
+          result.save(function (err) {
+            if (!err) { console.log('Success!'); }
+          });
         }
-      } else {
-        book = new Book({
-          isbn: rec.body.book.isbn,
-          author: rec.body.book.author,
-          image_url_m: rec.body.book.image_url_m,
-          publisher: rec.body.book.publisher,
-          vote_count: rec.body.book.vote_count,
-          rating: rec.body.book.rating,
-          title: rec.body.book.title,
-          last_seen: [{ bookstore: rec.body.bookstore, price: rec.body.price }]
-        })
       }
-    });
+    } else {
+      book = new Book({
+        isbn: req.body.book.isbn,
+        author: req.body.book.author,
+        image_url_m: req.body.book.image_url_m,
+        publisher: req.body.book.publisher,
+        vote_count: req.body.book.vote_count,
+        rating: req.body.book.rating,
+        title: req.body.book.title,
+        last_seen: [{ bookstore: req.body.bookstore, price: req.body.book.price }]
+      })
+      book.save(function (err, result) {
+        if (err) {
+          res.status(constants.INTERNAL_SERVER_ERR).json('Book was not saved!');
+        }
+        book = result;
+      });
+    }
     //adding book to user's list
     if (req.body.list && req.body.list === 'toRead') {
-      PersonModel.update(
-        { username: username },
+      User.update(
+        { username: req.body.username },
         { $push: { toRead: book._id } },
-        function (err) {
+        function (err, updated) {
           if (err) {
-            res.status(constants.CONFLICT).json(error.errors['toRead'].message);
+            res.status(constants.CONFLICT).json('Book was not saved!');
           } else {
             res.status(constants.OK).json("Done!");
           }
         });
+      //   User.findOne().byUsername(req.body.name).exec(function (err, result) {
+      //   if (err) {
+      //     res.status(constants.INTERNAL_SERVER_ERR).json('Book was not saved!');
+      //   } else {
+      //     if (result) {
+      //       result.toRead.push(book._id);
+      //       user.save(function (err, result) {
+      //       if (err) {
+      //         res.status(constants.INTERNAL_SERVER_ERR).json('Book was not saved!');
+      //       }
+      //     })
+      //     } else {
+      //       res.status(constants.UNAUTHORIZED).json('Book was not saved!');
+      //     }
+      //   }
+      // });
     }
     if (req.body.list && req.body.list === 'read') {
-      PersonModel.update(
-        { username: username },
+      User.update(
+        { username: req.body.username },
         { $push: { read: book._id } },
         function (err) {
           if (err) {
@@ -182,42 +203,42 @@ router.post('/searchBooks', (req, res) => {
       //update rating in db
       //update user list - check if exists
       let rated = [];
-      User.findOne({ username: req.body.username }, 'rated',
-        function (err, result) {
-          if (err) {
-            res.status(constants.INTERNAL_SERVER_ERR);
-          }
-          if (result) {
-            rated = result;
-          }
-        });
-      let ratingIdx = rated.findIndex(item => item.book === book._id);
-      let bookNewRating;
-      if (ratingIdx !== -1) {
-        let oldRating = rated[ratingIdx].rating;
-        rated[ratingIdx].rating = req.body.rating;
-        bookNewRating = ((book.rating * book.vote_count) - oldRating + req.body.rating) / book.vote_count;
-        book.rating = bookNewRating;
-      } else {
-        rated.push({ book: book._id, rating: req.body.rating });
-        book.vote_count += 1;
-        bookNewRating = ((book.rating * book.vote_count) + req.body.rating) / book.vote_count;
-        book.rating = bookNewRating;
-      }
-      PersonModel.update(
-        { username: username },
-        { rated: rated },
-        function (err) {
-          if (err) {
-            res.status(constants.INTERNAL_SERVER_ERR);
+      User.findOne().byUsername(req.body.username).exec(function (err, result) {
+        if (err) {
+          res.status(constants.INTERNAL_SERVER_ERR);
+        }
+        if (result) {
+          rated = result.rated;
+          let ratingIdx = rated.findIndex(item => item._doc.book === book._doc._id); //doesn't work
+          let bookNewRating;
+          if (ratingIdx !== -1) {
+            let oldRating = rated[ratingIdx].rating;
+            rated[ratingIdx].rating = req.body.rating;
+            bookNewRating = ((book.rating * book.vote_count) - oldRating + req.body.rating) / book.vote_count;
+            book.rating = bookNewRating;
           } else {
-            book.save(function (err) {
-              if (!err) { console.log('Success updating rating!'); }
-            });
-            res.status(constants.OK);
+            rated.push({ book: book._id, rating: req.body.rating });
+            book.vote_count += 1;
+            bookNewRating = ((book.rating * book.vote_count) + req.body.rating) / book.vote_count;
+            book.rating = bookNewRating;
           }
-        });
+          User.update(
+            { username: req.body.username },
+            { rated: rated },
+            function (err) {
+              if (err) {
+                res.status(constants.INTERNAL_SERVER_ERR);
+              } else {
+                book.save(function (err) {
+                  if (!err) { console.log('Success updating rating!'); }
+                });
+                res.status(constants.OK);
+              }
+            });
+        }
+      });
     }
   });
+});
 
-  module.exports = router;
+module.exports = router;

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { AddToListDTO } from '../model/add-to-list-dto';
 import { RatingDTO } from '../model/rating-dto';
-import { AlgoRatingDTO } from '../model/algo-rating-dto';
 import { Util } from '../shared/commons';
 
 import { Observable } from 'rxjs';
@@ -18,7 +17,7 @@ export class ActionsService {
         this.requestOptions = new RequestOptions({ headers: headers });
      }
 
-    private addToListServiceUrl = 'http://localhost:8089/SmartRead/rest/actions/addToList';
+    private addToListServiceUrl = '/api/addToList';
     private rateServiceUrl = 'http://localhost:8089/SmartRead/rest/actions/rate';
     private rateAlgoServiceUrl = 'http://localhost:8089/SmartRead/rest/actions/rateAlgo';
     private bookstoresUrl = 'https://smartread-bookstore.herokuapp.com/api/v1/bookstores/';
@@ -27,10 +26,9 @@ export class ActionsService {
         if(Util.checkIfUserLoggedOut()){
             return;
         }
-        let wrapper = { addToListObj: data };
-        let json = JSON.stringify(wrapper);
-        return this.http.post(this.addToListServiceUrl, json, this.requestOptions).map((res: Response) => res.json()) // ...and calling .json() on the response to return data
-            .catch((error: any) => Observable.throw(error.json() || 'Server error')); //...errors if any
+        let json = JSON.stringify(data);
+        return this.http.post(this.addToListServiceUrl, json, this.requestOptions).map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json() || 'Server error'));
     }
 
     rateBook(data: RatingDTO): Observable<String> {
@@ -41,15 +39,6 @@ export class ActionsService {
         let json = JSON.stringify(wrapper);
         return this.http.post(this.rateServiceUrl, json, this.requestOptions).map((res: Response) => res.json()) // ...and calling .json() on the response to return data
             .catch((error: any) => Observable.throw(error.json() || 'Server error')); //...errors if any//.map((res: Response) => console.log(res.json())); // ...and calling .json() on the response to return data
-    }
-
-    rateAlgorithm(data: AlgoRatingDTO) {
-        if(Util.checkIfUserLoggedOut()){
-            return;
-        }
-        let wrapper = { algoRatingObj: data };
-        let json = JSON.stringify(wrapper);
-        this.http.post(this.rateAlgoServiceUrl, json, this.requestOptions).map((res: Response) => console.log(res.json())); // ...and calling .json() on the response to return data
     }
 
     getBookstores(): Observable<String> {

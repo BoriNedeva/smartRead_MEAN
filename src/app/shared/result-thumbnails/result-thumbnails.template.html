@@ -20,8 +20,8 @@
     Add to list <span class="caret"></span>
   </button>
                         <ul class="dropdown-menu">
-                            <li *ngFor="let option of listOptions" (click)="addBookToList(option, book, bookContainer)">
-                                <a>{{option}}</a>
+                            <li *ngFor="let option of listOptions" (click)="addBookToList(option.key, book, bookContainer)">
+                                <a>{{option.value}}</a>
                             </li>
                         </ul>
                     </div>

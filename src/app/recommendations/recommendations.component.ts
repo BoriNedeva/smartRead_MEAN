@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { RecommendationsService } from '../services/recommendations.service';
 import { Util } from '../shared/commons';
-import { Algorithm } from '../model/algo-rating-dto';
 
 @Component({
     selector: 'recommendations',
@@ -13,9 +12,9 @@ export class RecommendationsComponent {
     dbScanRecommends: any;
     kMeansRecommends: any;
     knnRecommends: any;
-    dbScanType: Algorithm = Algorithm.DBSCAN;
-    kMeansType: Algorithm = Algorithm.KMEANS;
-    knnType: Algorithm = Algorithm.KNN;
+    dbScanType: 'Algorithm.DBSCAN';
+    kMeansType: 'Algorithm.KMEANS';
+    knnType: 'Algorithm.KNN';
 
     constructor(private recommendsService: RecommendationsService) {
         Util.toggleNavbarButtonActive('nav-recommendations');

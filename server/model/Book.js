@@ -17,7 +17,7 @@ var bookSchema = new Schema({
 });
 
 bookSchema.query.byIsbn = function(isbn) {
-  return this.find({ isbn: isbn });
+  return this.findOne({ isbn: isbn });
 };
 
 var Book = mongoose.model('Book', bookSchema);
