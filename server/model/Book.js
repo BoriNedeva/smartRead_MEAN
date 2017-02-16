@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+module.exports = function (connection) {
 var bookSchema = new Schema({
     isbn: { type: String, required: true, unique: true },
     author: String,
@@ -20,5 +21,7 @@ bookSchema.query.byIsbn = function(isbn) {
   return this.findOne({ isbn: isbn });
 };
 
-var Book = mongoose.model('Book', bookSchema);
-module.exports = Book;
+//var Book = mongoose.model('Book', bookSchema);
+//module.exports = Book;
+return connection.model('Book', bookSchema);
+}

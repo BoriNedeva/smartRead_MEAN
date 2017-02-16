@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 // create a schema
+module.exports = function (connection) {
 var userSchema = new Schema({
   username: { type: String, 
     required: [true, 'Username is required!']},
@@ -11,10 +12,8 @@ var userSchema = new Schema({
     required: [true, 'Email is required!']},
   location: String,
   age: Number,
-  read: [{ type: Schema.Types.ObjectId, 
-    ref: 'Book'}],
-  toRead: [{ type: Schema.Types.ObjectId, 
-    ref: 'Book'}],
+  read: [{ type: Schema.Types.ObjectId, ref: 'Book'}],
+  toRead: [{ type: Schema.Types.ObjectId, ref: 'Book'}],
   rated: [{
     book: { type: Schema.Types.ObjectId, ref: 'Book' },
     rating: Number
@@ -31,7 +30,8 @@ userSchema.query.byUsername = function(username) {
 };
 // the schema is useless so far
 // we need to create a model using it
-var User = mongoose.model('User', userSchema);
-
+//var User = mongoose.model('User', userSchema);
+return connection.model('User', userSchema);
+}
 // make this available to our users in our Node applications
-module.exports = User;
+//module.exports = User;

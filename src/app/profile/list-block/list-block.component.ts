@@ -3,13 +3,12 @@ import { ActionsService } from '../../services/actions.service';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 
 @Component({
-    selector: 'recommendations-block',
-    templateUrl: 'recommendations-block.template.html'
+    selector: 'list-block',
+    templateUrl: 'list-block.template.html'
 })
-export class RecommendationsBlockComponent {
+export class ListBlockComponent {
 
     @Input() data;
-    @Input() type : Algorithm;
 
     constructor(private actionsService: ActionsService){}
 

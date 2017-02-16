@@ -17,9 +17,9 @@ import { AuthGuard } from './guards/auth.guard'
 import { AuthenticationService } from './services/authentication.service';
 import { ActionsService } from './services/actions.service';
 import { OffersComponent } from './offers/offers.component';
-import { RecommendationsComponent } from './recommendations/recommendations.component';
+import { ProfileComponent } from './profile/profile.component';
 import { ResultThumbnailsComponent } from './shared/result-thumbnails/result-thumbnails.component';
-import { RecommendationsBlockComponent } from './recommendations/recommendations-block/recommendations-block.component';
+import { ListBlockComponent } from './profile/list-block/list-block.component';
 
 import './rxjs-extensions';
 
@@ -38,9 +38,9 @@ import './rxjs-extensions';
     PageNotFoundComponent,
     SearchBookComponent,
     OffersComponent,
-    RecommendationsComponent,
+    ProfileComponent,
     ResultThumbnailsComponent,
-    RecommendationsBlockComponent
+    ListBlockComponent
   ],
   providers: [AuthGuard,
   AuthenticationService,

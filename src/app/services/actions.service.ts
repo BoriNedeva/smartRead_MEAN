@@ -18,8 +18,7 @@ export class ActionsService {
      }
 
     private addToListServiceUrl = '/api/addToList';
-    private rateServiceUrl = 'http://localhost:8089/SmartRead/rest/actions/rate';
-    private rateAlgoServiceUrl = 'http://localhost:8089/SmartRead/rest/actions/rateAlgo';
+    private getListsUrl = '/api/getLists';
     private bookstoresUrl = 'https://smartread-bookstore.herokuapp.com/api/v1/bookstores/';
 
     addToList(data: AddToListDTO): Observable<String> {
@@ -31,22 +30,21 @@ export class ActionsService {
             .catch((error: any) => Observable.throw(error.json() || 'Server error'));
     }
 
-    rateBook(data: RatingDTO): Observable<String> {
+    getLists(username: String): Observable<String> {
         if(Util.checkIfUserLoggedOut()){
             return;
         }
-        let wrapper = { ratingObj: data };
-        let json = JSON.stringify(wrapper);
-        return this.http.post(this.rateServiceUrl, json, this.requestOptions).map((res: Response) => res.json()) // ...and calling .json() on the response to return data
-            .catch((error: any) => Observable.throw(error.json() || 'Server error')); //...errors if any//.map((res: Response) => console.log(res.json())); // ...and calling .json() on the response to return data
+        let json = JSON.stringify({username: username});
+        return this.http.post(this.getListsUrl, json, this.requestOptions).map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json() || 'Server error'));
     }
 
     getBookstores(): Observable<String> {
         if(Util.checkIfUserLoggedOut()){
             return;
         }
-        return this.http.get(this.bookstoresUrl).map((res: Response) => res.json()) // ...and calling .json() on the response to return data
-            .catch((error: any) => Observable.throw(error.json() || 'Server error')).delay(3000); //...errors if any
+        return this.http.get(this.bookstoresUrl).map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json() || 'Server error'));
     }
 
     getOffers(name): Observable<String> {

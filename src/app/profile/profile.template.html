@@ -1,0 +1,16 @@
+<ul class="nav nav-tabs nav-justified" id="listTabs">
+    <li role="presentation" name="Read" class="active"><a href="" (click)="toggleActive($event)">Read</a></li>
+    <li role="presentation" name="ToRead"><a href="" (click)="toggleActive($event)">To Read</a></li>
+    <li role="presentation" name="Rated"><a href="" (click)="toggleActive($event)">Rated</a></li>
+</ul>
+<div *ngIf="lists" id="list-container">
+    <div class="listPage active" id="Read">
+        <list-block [data]="lists.read"></list-block>
+    </div>
+    <div class="listPage" id="ToRead">
+        <list-block [data]="lists.toRead"></list-block>
+    </div>
+    <div class="listPage" id="Rated">
+        <list-block [data]="lists.rated"></list-block>
+    </div>
+</div>

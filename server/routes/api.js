@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-var User = require('../model/User');
-var Book = require('../model/Book');
+var mongoose = require('mongoose');
+
+var User = require('../model/User')(mongoose.connection);
+var Book = require('../model/Book')(mongoose.connection);
 var constants = require('./constants_sr');
 var BookDTO = require('../dto/book-dto');
 
@@ -102,20 +104,48 @@ router.post('/searchBooks', (req, res) => {
 });
 
 router.post('/getLists', (req, res) => {
-  User.findOne({ username: req.body.name }, 'read toRead rated',
-    function (err, result) {
+  let readL;
+  let toReadL;
+  let ratedL;
+  User.findOne({ username: req.body.username }, 'read toRead rated')//.populate('read', 'toRead')
+    .exec(function (err, result) {
       if (err) {
         res.status(constants.INTERNAL_SERVER_ERR);
       }
       if (result) {
-        res.status(constants.OK).json(result);
+        readL = result.read.map(item => {
+         Book.findOne({_id: item}, (req, res) => {
+            if (res) {
+              item = res;
+              return item;
+            }
+          });
+          
+        });
+        toReadL = result.toRead.map(item => {
+         Book.findOne({_id: item}, (req, res) => {
+            if (res) {
+              item = res;
+              return item;
+            }
+          });
+          
+        });
+        ratedL = result.rated.map(item => {
+           Book.findOne({_id: item.book}, (req, res) => {
+            if (res) {
+              res.rating = item.rating;
+              item = res;
+              return item;
+            }
+          });
+        });
+        process.nextTick(() => {
+          let resultWhole = {read: readL, toRead: toReadL, rated: ratedL};
+          res.status(constants.OK).json(result);
+        })
       }
     });
-  // User
-  //   .findOne({ username: req.body.name }, 'read toRead rated')
-  //   .populate('read', 'toRead')
-  //   .exec(function (err, result) {
-  //   });
 });
 
 router.post('/addToList', (req, res) => {
@@ -200,8 +230,6 @@ router.post('/addToList', (req, res) => {
         });
     }
     if (req.body.rating) {
-      //update rating in db
-      //update user list - check if exists
       let rated = [];
       User.findOne().byUsername(req.body.username).exec(function (err, result) {
         if (err) {
