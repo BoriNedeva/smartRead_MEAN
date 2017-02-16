@@ -1,0 +1,16 @@
+<ul class="nav nav-tabs nav-justified" id="recTabs">
+    <li role="presentation" name="DBScan" class="active"><a href="" (click)="toggleActive($event)">DBScan</a></li>
+    <li role="presentation" name="KMeans"><a href="" (click)="toggleActive($event)">KMeans</a></li>
+    <li role="presentation" name="KNN"><a href="" (click)="toggleActive($event)">KNN</a></li>
+</ul>
+<div id="recommendations-container">
+    <div class="recPage active" id="DBScan">
+        <recommendations-block [data]="dbScanRecommends" [type]="dbScanType"></recommendations-block>
+    </div>
+    <div class="recPage" id="KMeans">
+        <recommendations-block [data]="kMeansRecommends" [type]="kMeansType"></recommendations-block>
+    </div>
+    <div class="recPage" id="KNN">
+        <recommendations-block [data]="knnRecommends" [type]="knnType"></recommendations-block>
+    </div>
+</div>

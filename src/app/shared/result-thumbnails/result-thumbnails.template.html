@@ -1,0 +1,32 @@
+<div *ngIf="books" class="thumbnails-container">
+    <div class="row">
+        <div *ngFor="let book of books" class="col-sm-6 col-md-4 col-lg-4">
+            <div class="thumbnail">
+                <img src="{{book.image_url_m}}" alt="">
+                <div class="caption" #bookContainer>
+                    <h3>{{book.title}}</h3>
+                    <p>Author: {{book.author}}</p>
+                    <p>Publisher: {{book.publisher}}</p>
+                    <p *ngIf="showPrice">Price: <span class="strong">{{book.price | currency:'USD':true}}</span></p>
+                    <p *ngIf="showRating">Rating: {{book.rating}}</p>
+                    <p *ngIf="rate">
+                        Rate:
+                        <span class="stars">
+        <rating [(ngModel)]="book.rating" [max]="max" [readonly]="isReadonly" (click)="rateBook(book)"></rating>
+    </span>
+                    </p>
+                    <div *ngIf="addToList" class="btn-group">
+                        <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Add to list <span class="caret"></span>
+  </button>
+                        <ul class="dropdown-menu">
+                            <li *ngFor="let option of listOptions" (click)="addBookToList(option, book, bookContainer)">
+                                <a>{{option}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,7 @@
+<div class="rating">
+    Rate this algorithm:
+    <span class="stars">
+        <rating [(ngModel)]="rate" [max]="max" [readonly]="isReadonly" (click)="rateAlgorithm()"></rating>
+    </span>
+</div>
+<result-thumbnails [books]="data" [rate]="showRating"></result-thumbnails>

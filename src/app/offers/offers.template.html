@@ -1,0 +1,12 @@
+<div class="btn-group bookstore-dropdown">
+    <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    {{bookstoreName}} <span class="caret"></span>
+  </button>
+    <ul class="dropdown-menu">
+        <li *ngIf="!bookstores" class="loading"><img src="/assets/images/loading3.gif"> </li>
+        <li *ngFor="let bookstore of bookstores" (click)="getOffersFromBookstore(bookstore.name)">
+            <a>{{bookstore.name}}</a>
+        </li>
+    </ul>
+</div>
+<result-thumbnails [books]="books" [showPrice]="showPrice"></result-thumbnails>

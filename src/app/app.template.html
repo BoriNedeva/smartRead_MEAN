@@ -1,0 +1,26 @@
+<nav class="navbar navbar-inverse smartR-navbar">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="collapsed navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9"
+                aria-expanded="false"> 
+            <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> 
+            <span class="icon-bar"></span> <span class="icon-bar"></span> </button>            
+            <a href="#" class="navbar-brand">SmartRead</a> 
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
+            <ul id="navbarList" class="nav navbar-nav">
+                <li *ngIf="!userLogged" id="nav-login"><a routerLink="/login">Log In</a></li>
+                <li *ngIf="!userLogged" id="nav-register"><a routerLink="/register">Register</a></li>
+                <li id="nav-search-book"><a routerLink="/search-book">Search books</a></li>
+                <li id="nav-offers"><a routerLink="/offers">Get offers</a></li>
+                <li id="nav-recommendations"><a routerLink="/recommendations">Recommendations</a></li>
+                <li *ngIf="userLogged"><a href="#" (click)="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<router-outlet></router-outlet>
+<footer>
+    <div class="footer-image">
+    </div>
+</footer>

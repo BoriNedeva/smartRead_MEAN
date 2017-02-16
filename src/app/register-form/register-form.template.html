@@ -1,0 +1,36 @@
+<div class="container container-small register-form">
+    <h1>Register</h1>
+    <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" required [(ngModel)]="newUser.username" name="username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" required [(ngModel)]="newUser.password" name="password">
+        </div>
+        <div class="form-group">
+            <label for="repeatPassword">Repeat password</label>
+            <input type="password" class="form-control" id="repeatPassword" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" required [(ngModel)]="newUser.email" name="email">
+        </div>
+        <div class="form-group">
+            <label for="location">Location</label>
+            <input type="text" class="form-control" id="location" [(ngModel)]="newUser.location" name="location">
+        </div>
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" class="form-control" id="age" [(ngModel)]="newUser.age" name="age" min="1">
+        </div>
+        <button type="submit" class="btn btn-default">Register</button>
+    </form>
+    <alert *ngIf="unsuccessful" type="danger">
+        {{message}}
+    </alert>
+    <alert *ngIf="successful" type="success">
+        {{message}}!
+    </alert>
+</div>

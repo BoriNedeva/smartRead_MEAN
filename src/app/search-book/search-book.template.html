@@ -1,0 +1,22 @@
+<div class="container container-medium search-container">
+    <h1>Search Books</h1>
+    <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" [(ngModel)]="searchData.name" name="name">
+        </div>
+        <div class="form-group">
+            <label for="author">Author</label>
+            <input type="author" class="form-control" id="author" [(ngModel)]="searchData.author" name="author">
+        </div>
+        <button type="submit" class="btn btn-default">Search</button>
+       <!--<div class="form-group">
+           <label *ngFor="let genre of genres" class="checkbox-inline">
+                <input type="checkbox" name="genres" value="{{genre.name}}" [(ngModel)]="genre.checked">{{genre.name}}
+            </label>
+       </div>-->
+    </form>
+</div>
+<div class="search-result">
+    <result-thumbnails [books]="result" [addToList]="addToList" [rate]="rate"></result-thumbnails>
+</div>

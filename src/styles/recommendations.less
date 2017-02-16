@@ -1,0 +1,38 @@
+#recTabs {
+    li {
+        &.active {
+            a{
+                background-color: @background-transparent;
+                border-bottom-color: transparent;
+            }
+        }
+    }
+}
+
+#recommendations-container {
+    .recPage {
+        display: none;
+        &.active {
+            display: block;
+        }
+        .rating {
+            padding-left: 10px;
+            background-color: @background-transparent;
+            height: 50px;
+            line-height: 50px;
+            .stars {
+                font-size: 20px;
+            }
+        }
+        .thumbnails-container {
+            //max-height: 690px;
+            //height: 69vh;
+            height: 380px;
+        }
+        @media screen and (min-height: 974px) {
+            .thumbnails-container {
+                height: 69vh;
+            }
+        }
+    }
+}

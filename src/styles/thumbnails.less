@@ -1,0 +1,49 @@
+.thumbnails-container {
+    position: relative;
+    margin: auto;
+    //max-height: 750px;
+    //height: 75vh;
+    height: 440px;
+    max-width: 1000px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    top: 20px;
+    left: 10px;
+    .thumbnail {
+        background-color: @background-transparent;
+        width: 300px;
+        height: 180px;
+        img {
+            float: right;
+            width: 95px;
+            height: 150px;
+            margin-top: 5px;
+            margin-right: 5px;
+        }
+        .caption {
+            h3, p {
+                overflow: auto;
+                display: block;
+                max-width: 265px;
+                -ms-overflow-style: none; // IE 10+
+                &::-webkit-scrollbar {
+                    display: none; // Safari and Chrome
+                }
+            }
+            p {
+                max-height: 20px;
+            }
+            h3 {
+                max-height: 50px;
+                font-size: 22px;
+                margin-top: 10px;
+            }
+        }
+    }
+}
+
+@media screen and (min-height: 974px) {
+    .thumbnails-container {
+        height: 77vh;
+    }
+}
