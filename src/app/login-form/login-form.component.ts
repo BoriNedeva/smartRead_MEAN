@@ -10,7 +10,6 @@ import { Util, Events } from '../shared/commons';
 })
 export class LoginFormComponent implements OnInit{
     user = new User('','');
-    //submitted = false;
     loginFailed = false;
     returnUrl: string;
 
@@ -27,7 +26,6 @@ export class LoginFormComponent implements OnInit{
         if (!this.returnUrl){
             this.returnUrl = '/search-book';
         }
-        //this.submitted = true;
         this.loginService.login(this.user).subscribe((logged: Boolean) => {
             if (logged){
                 this.router.navigate([this.returnUrl]);

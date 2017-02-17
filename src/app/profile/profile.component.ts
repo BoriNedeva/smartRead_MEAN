@@ -8,17 +8,35 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
     templateUrl: 'profile.template.html',
 })
 export class ProfileComponent {
-    lists: any;
-    //toReadList: any[];
-    //ratedList: any[];
+    //lists: any;
+    readList: any;
+    ratedList: any;
+    toReadList: any;
 
     constructor(private actionsService: ActionsService) {
         Util.toggleNavbarButtonActive('nav-profile');
-        this.actionsService.getLists(Cookie.get('currentUser')).subscribe(result => {
-            this.lists = result;
+        this.actionsService.getRead(Cookie.get('currentUser')).subscribe(result => {
+            this.readList = result;
         }, err => {
             console.log(err);
         });
+
+        this.actionsService.getToRead(Cookie.get('currentUser')).subscribe(result => {
+            this.toReadList = result;
+        }, err => {
+            console.log(err);
+        });
+
+        this.actionsService.getRated(Cookie.get('currentUser')).subscribe(result => {
+            this.ratedList = result;
+        }, err => {
+            console.log(err);
+        });
+        // this.actionsService.getLists(Cookie.get('currentUser')).subscribe(result => {
+        //     this.lists = result;
+        // }, err => {
+        //     console.log(err);
+        // });
     }
 
     toggleActive(event) {

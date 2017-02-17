@@ -15,14 +15,17 @@ export class ActionsService {
         let headers = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
         headers.append('Accept', 'application/json');
         this.requestOptions = new RequestOptions({ headers: headers });
-     }
+    }
 
     private addToListServiceUrl = '/api/addToList';
     private getListsUrl = '/api/getLists';
+    private getReadUrl = '/api/getRead';
+    private getToReadUrl = '/api/getToRead';
+    private getRatedUrl = '/api/getRated';
     private bookstoresUrl = 'https://smartread-bookstore.herokuapp.com/api/v1/bookstores/';
 
     addToList(data: AddToListDTO): Observable<String> {
-        if(Util.checkIfUserLoggedOut()){
+        if (Util.checkIfUserLoggedOut()) {
             return;
         }
         let json = JSON.stringify(data);
@@ -31,16 +34,43 @@ export class ActionsService {
     }
 
     getLists(username: String): Observable<String> {
-        if(Util.checkIfUserLoggedOut()){
+        if (Util.checkIfUserLoggedOut()) {
             return;
         }
-        let json = JSON.stringify({username: username});
+        let json = JSON.stringify({ username: username });
         return this.http.post(this.getListsUrl, json, this.requestOptions).map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json() || 'Server error'));
     }
 
+    getRead(username: String): Observable<String> {
+        if (Util.checkIfUserLoggedOut()) {
+            return;
+        }
+        let json = JSON.stringify({ username: username });
+        return this.http.post(this.getReadUrl, json, this.requestOptions).map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json() || 'Server error'));
+    }
+
+    getToRead(username: String): Observable<String> {
+        if (Util.checkIfUserLoggedOut()) {
+            return;
+        }
+        let json = JSON.stringify({ username: username });
+        return this.http.post(this.getToReadUrl, json, this.requestOptions).map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json() || 'Server error'));
+    }
+
+    getRated(username: String): Observable<String> {
+        if (Util.checkIfUserLoggedOut()) {
+            return;
+        }
+        let json = JSON.stringify({ username: username });
+        return this.http.post(this.getRatedUrl, json, this.requestOptions).map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json() || 'Server error'));
+    }
+
     getBookstores(): Observable<String> {
-        if(Util.checkIfUserLoggedOut()){
+        if (Util.checkIfUserLoggedOut()) {
             return;
         }
         return this.http.get(this.bookstoresUrl).map((res: Response) => res.json())
@@ -48,7 +78,7 @@ export class ActionsService {
     }
 
     getOffers(name): Observable<String> {
-        if(Util.checkIfUserLoggedOut()){
+        if (Util.checkIfUserLoggedOut()) {
             return;
         }
         let url = this.bookstoresUrl + name;

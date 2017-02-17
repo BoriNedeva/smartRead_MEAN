@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 var mongoose = require('mongoose');
+ObjectID = require('mongodb').ObjectID
 
 var User = require('../model/User')(mongoose.connection);
 var Book = require('../model/Book')(mongoose.connection);
@@ -66,41 +67,101 @@ router.post('/register', (req, res) => {
 
 router.post('/searchBooks', (req, res) => {
   let user;
-  User.findOne().byUsername(req.body.name).exec(function (err, result) {
+  User.findOne().byUsername(req.body.username).exec(function (err, found) {
     //Model.findOne({username: req.body.name}, //'read toRead rated', 
     //function (err, result) {
-    if (docs) {
-      user = result;
-    }
-  });
-  let query = Book.find();
-  if (req.body.name) {
-    query.where('title').equals(name);
-  }
-  if (req.body.author) {
-    query.where('author').equals(author);
-  }
-  query.exec(function (err, result) {
-    if (err) {
-      res.status(constants.INTERNAL_SERVER_ERR);
-    } else {
-      let books = [];
-      books = result.map(item => {
-        if (user.read.find(book => book._id === item._id)) {
-          item.list = 'read';
-        } else if (user.toRead.find(book => book._id === item._id)) {
-          item.list = 'toRead';
+    if (found) {
+      user = found;
+      let query = Book.find();
+      if (req.body.name) {
+        query.where('title').equals(req.body.name);
+      }
+      if (req.body.author) {
+        query.where('author').equals(req.body.author);
+      }
+      query.exec(function (err, result) {
+        if (err) {
+          res.status(constants.INTERNAL_SERVER_ERR);
         } else {
-          item.list = 'none';
-        }
-        let userRating = user.rated.find(rated => rated.book._id === item._id);
-        if (rating) {
-          item.user_rating = userRating.rating;
+          let books = [];
+          books = result.map(item => {
+            if (user.read.find(book => {
+              console.log(book.id);
+              console.log(ObjectID.createFromHexString(item._id.toString()));
+              console.log(book.id == ObjectID.createFromHexString(item._id.toString()));
+            return book.id == item.id})) {
+              item._doc.list = 'read';
+            } else if (user.toRead.find(book => book.id == item.id)) {
+              item._doc.list = 'toRead';
+            } else {
+              item._doc.list = 'none';
+            }
+            let userRating = user.rated.find(rated => rated.book.id == item.id);
+            if (userRating) {
+              item._doc.user_rating = userRating.rating;
+            }
+            return item;
+          });
+          res.status(constants.OK).json(books);
         }
       });
-      res.status(constants.OK).json(books);
     }
   });
+
+});
+
+
+router.post('/getRead', (req, res) => {
+  let readL;
+  User.findOne({ username: req.body.username }, 'read')
+    .exec(function (err, result) {
+      if (err) {
+        res.status(constants.INTERNAL_SERVER_ERR);
+      }
+      if (result) {
+        //readL = result.read.map(item => {
+          Book.find().where('_id').in(result.read).exec(function (req, books) {
+            if (books) {
+              res.status(constants.OK).json(books);
+            }
+          });
+        //});
+      }
+    });
+});
+
+router.post('/getToRead', (req, res) => {
+  let readL;
+  User.findOne({ username: req.body.username }, 'toRead')
+    .exec(function (err, result) {
+      if (err) {
+        res.status(constants.INTERNAL_SERVER_ERR);
+      }
+      if (result) {
+          Book.find().where('_id').in(result.toRead).exec(function (req, books) {
+            if (books) {
+              res.status(constants.OK).json(books);
+            }
+          });
+      }
+    });
+});
+
+router.post('/getRated', (req, res) => {
+  let readL;
+  User.findOne({ username: req.body.username }, 'rated')
+    .exec(function (err, result) {
+      if (err) {
+        res.status(constants.INTERNAL_SERVER_ERR);
+      }
+      if (result) {
+          Book.find().where('rated.book').in(result.rated).exec(function (req, books) {
+            if (books) {
+              res.status(constants.OK).json(books);
+            }
+          });
+      }
+    });
 });
 
 router.post('/getLists', (req, res) => {
@@ -114,25 +175,25 @@ router.post('/getLists', (req, res) => {
       }
       if (result) {
         readL = result.read.map(item => {
-         Book.findOne({_id: item}, (req, res) => {
+          Book.findOne({ _id: item }, (req, res) => {
             if (res) {
               item = res;
               return item;
             }
           });
-          
+
         });
         toReadL = result.toRead.map(item => {
-         Book.findOne({_id: item}, (req, res) => {
+          Book.findOne({ _id: item }, (req, res) => {
             if (res) {
               item = res;
               return item;
             }
           });
-          
+
         });
         ratedL = result.rated.map(item => {
-           Book.findOne({_id: item.book}, (req, res) => {
+          Book.findOne({ _id: item.book }, (req, res) => {
             if (res) {
               res.rating = item.rating;
               item = res;
@@ -141,7 +202,7 @@ router.post('/getLists', (req, res) => {
           });
         });
         process.nextTick(() => {
-          let resultWhole = {read: readL, toRead: toReadL, rated: ratedL};
+          let resultWhole = { read: readL, toRead: toReadL, rated: ratedL };
           res.status(constants.OK).json(result);
         })
       }
