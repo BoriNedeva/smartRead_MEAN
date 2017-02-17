@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { SearchBook } from '../model/searchBook';
-import { Book } from '../model/book';
 import { SearhBookService } from '../services/search-book.service';
 import { Util } from '../shared/commons';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
@@ -12,8 +11,9 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
 })
 export class SearchBookComponent {
     result: any;
+    rating = true;
     rate = true;
-    addToList = false;
+    addToList = true;
     searchData = new SearchBook(Cookie.get('currentUser'), '', '');
 
     constructor(private searchService: SearhBookService) { 

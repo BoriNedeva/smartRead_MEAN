@@ -9,6 +9,9 @@
                     <p>Publisher: {{book.publisher}}</p>
                     <p *ngIf="showPrice">Price: <span class="strong">{{book.price | currency:'USD':true}}</span></p>
                     <p *ngIf="showRating">Rating: {{book.rating}}</p>
+                    <div *ngIf="book.last_seen">
+                        <p *ngFor="let item of book.last_seen">{{item.bookstore}}: {{item.price | currency:'USD':true}}</p>
+                    </div>
                     <p *ngIf="rate">
                         Rate:
                         <span class="stars">

@@ -155,7 +155,8 @@ router.post('/getRated', (req, res) => {
         res.status(constants.INTERNAL_SERVER_ERR);
       }
       if (result) {
-          Book.find().where('rated.book').in(result.rated).exec(function (req, books) {
+          let ids = result.rated.map(item => item.book);
+          Book.find().where('_id').in(ids).exec(function (req, books) {
             if (books) {
               res.status(constants.OK).json(books);
             }
@@ -164,50 +165,50 @@ router.post('/getRated', (req, res) => {
     });
 });
 
-router.post('/getLists', (req, res) => {
-  let readL;
-  let toReadL;
-  let ratedL;
-  User.findOne({ username: req.body.username }, 'read toRead rated')//.populate('read', 'toRead')
-    .exec(function (err, result) {
-      if (err) {
-        res.status(constants.INTERNAL_SERVER_ERR);
-      }
-      if (result) {
-        readL = result.read.map(item => {
-          Book.findOne({ _id: item }, (req, res) => {
-            if (res) {
-              item = res;
-              return item;
-            }
-          });
+// router.post('/getLists', (req, res) => {
+//   let readL;
+//   let toReadL;
+//   let ratedL;
+//   User.findOne({ username: req.body.username }, 'read toRead rated')//.populate('read', 'toRead')
+//     .exec(function (err, result) {
+//       if (err) {
+//         res.status(constants.INTERNAL_SERVER_ERR);
+//       }
+//       if (result) {
+//         readL = result.read.map(item => {
+//           Book.findOne({ _id: item }, (req, res) => {
+//             if (res) {
+//               item = res;
+//               return item;
+//             }
+//           });
 
-        });
-        toReadL = result.toRead.map(item => {
-          Book.findOne({ _id: item }, (req, res) => {
-            if (res) {
-              item = res;
-              return item;
-            }
-          });
+//         });
+//         toReadL = result.toRead.map(item => {
+//           Book.findOne({ _id: item }, (req, res) => {
+//             if (res) {
+//               item = res;
+//               return item;
+//             }
+//           });
 
-        });
-        ratedL = result.rated.map(item => {
-          Book.findOne({ _id: item.book }, (req, res) => {
-            if (res) {
-              res.rating = item.rating;
-              item = res;
-              return item;
-            }
-          });
-        });
-        process.nextTick(() => {
-          let resultWhole = { read: readL, toRead: toReadL, rated: ratedL };
-          res.status(constants.OK).json(result);
-        })
-      }
-    });
-});
+//         });
+//         ratedL = result.rated.map(item => {
+//           Book.findOne({ _id: item.book }, (req, res) => {
+//             if (res) {
+//               res.rating = item.rating;
+//               item = res;
+//               return item;
+//             }
+//           });
+//         });
+//         process.nextTick(() => {
+//           let resultWhole = { read: readL, toRead: toReadL, rated: ratedL };
+//           res.status(constants.OK).json(result);
+//         })
+//       }
+//     });
+// });
 
 router.post('/addToList', (req, res) => {
   let book;

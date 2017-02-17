@@ -9,10 +9,9 @@ export class ListBlockComponent {
 
     @Input() data;
 
-    constructor(private actionsService: ActionsService){}
-
-    public max: number = 5;
-    public rate: number = 0;
     public isReadonly: boolean = false;
     public showRating = true;
+    public rate = true;
+    
+    constructor(private actionsService: ActionsService){}
 }

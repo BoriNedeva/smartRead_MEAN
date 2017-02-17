@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { AddToListDTO } from '../model/add-to-list-dto';
-import { RatingDTO } from '../model/rating-dto';
 import { Util } from '../shared/commons';
 
 import { Observable } from 'rxjs';

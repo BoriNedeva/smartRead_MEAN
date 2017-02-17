@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ActionsService } from '../../services/actions.service';
 import { AddToListDTO } from '../../model/add-to-list-dto';
-import { RatingDTO } from '../../model/rating-dto';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 
 @Component({
